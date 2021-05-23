@@ -6,7 +6,7 @@ echo "Initilaizing a highly available Kubernetes cluster..."
 
 NODE_PASSWORD=$(yq e '.NODE_PASSWORD' config.yml)
 
-#vagrant up &> vagrant.log
+vagrant up &> vagrant.log
 
 MASTER_IP_RANGE=$(yq e '.MASTER_IP_RANGE' config.yml)
 
