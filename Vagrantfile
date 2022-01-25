@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
       workernode.vm.network "private_network", ip: "" + CLUST_CONF['WORKER_IP_RANGE'] + "#{i}"
       workernode.vm.provider "virtualbox" do |v|
         v.name = "kworker#{i}"
-        v.memory = 2048
+        v.memory = 4096
         v.cpus = 1
       end
       workernode.vm.provision "shell", path: "bootstrap.sh"
