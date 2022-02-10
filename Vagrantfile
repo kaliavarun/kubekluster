@@ -49,6 +49,9 @@ Vagrant.configure(2) do |config|
       workernode.vm.box = "bento/ubuntu-20.04"
       workernode.vm.hostname = "kworker#{i}.example.com"
       workernode.vm.network "private_network", ip: "" + CLUST_CONF['WORKER_IP_RANGE'] + "#{i}"
+      #workernode.vm.network "public_network", ip: "192.168.2.#{i}", bridge: "wlp2s0"
+      #workernode.vm.network "public_network", ip: "192.168.2.#{i}"
+      workernode.vm.network "public_network", :bridge => "wlp2s0", :ip => "192.168.2.3#{i}"
       workernode.vm.provider "virtualbox" do |v|
         v.name = "kworker#{i}"
         v.memory = 4096

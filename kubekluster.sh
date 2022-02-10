@@ -1,4 +1,5 @@
 #/bin/sh
+set -x
 echo "Initilaizing a highly available Kubernetes cluster..."
 
 #Creating virtual machines to act as cluster nodes
