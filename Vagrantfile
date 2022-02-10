@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
       workernode.vm.network "private_network", ip: "" + CLUST_CONF['WORKER_IP_RANGE'] + "#{i}"
       #workernode.vm.network "public_network", ip: "192.168.2.#{i}", bridge: "wlp2s0"
       #workernode.vm.network "public_network", ip: "192.168.2.#{i}"
-      workernode.vm.network "public_network", :bridge => "wlp2s0", :ip => "192.168.2.3#{i}"
+      workernode.vm.network "public_network", :bridge => "wlp2s0", :ip => "192.168.1.3#{i}"
       workernode.vm.provider "virtualbox" do |v|
         v.name = "kworker#{i}"
         v.memory = 4096
