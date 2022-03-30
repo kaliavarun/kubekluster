@@ -1,6 +1,6 @@
 # kubekluster
 
-<img src="https://github.com/kaliavarun/kubekluster/blob/main/icons/kubekluster.jpg" width="100">
+<img src="https://github.com/kaliavarun/kubekluster/blob/main/icons/kubekluster.jpg" width="600px">
 
 ----
 
