@@ -15,8 +15,8 @@ backend kubernetes-backend
     mode tcp
     option tcp-check
     balance roundrobin
-    server kmaster1 172.16.16.101:6443 check fall 3 rise 2
-    #server kmaster2 172.16.16.102:6443 check fall 3 rise 2
+    server kmaster1 192.168.56.101:6443 check fall 3 rise 2
+    #server kmaster2 192.168.56.102:6443 check fall 3 rise 2
 
 frontend http_front
   bind *:80
@@ -33,16 +33,16 @@ frontend https_front
 
 backend http_back
   balance roundrobin
-  server kworker1 172.16.16.201:32502
-  server kworker2 172.16.16.202:32502
+  server kworker1 192.168.56.201:32502
+  server kworker2 192.168.56.202:32502
 
 
 backend https_back
   mode tcp
   balance roundrobin
-  server kworker1 172.16.16.201:31012
-  server kworker2 172.16.16.202:31012
-  #server kworker2 172.16.16.202:31012 check-ssl verify none send-proxy-v2
+  server kworker1 192.168.56.201:31012
+  server kworker2 192.168.56.202:31012
+  #server kworker2 192.168.56.201:31012 check-ssl verify none send-proxy-v2
 
 EOF
 

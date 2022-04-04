@@ -11,7 +11,7 @@ if [[ $4 == "MASTER" ]]
 then
   if [[ $3 -eq 1 ]]
   then
-    CMD="kubeadm init --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16"
+    CMD="kubeadm init --v=5 --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16"
     echo $CMD
     eval $CMD
 
@@ -26,10 +26,10 @@ then
     mkdir -p /vagrant/.tmp
 
     echo "[MASTER NODE 1] identified. Generating token for other master nodes to join control plane.."
-    kubeadm init phase upload-certs --upload-certs | sed -n 3p > $TOKEN_CONTROL_PLANE
+    kubeadm init phase upload-certs --v=5 --upload-certs | sed -n 3p > $TOKEN_CONTROL_PLANE
     echo "token created at $(pwd $TOKEN_CONTROL_PLANE)"
     echo "token value $(cat $TOKEN_CONTROL_PLANE)"
-    kubeadm token create --print-join-command > $CMD_JOIN_MASTER
+    kubeadm token create --v=5 --print-join-command > $CMD_JOIN_MASTER
 
     echo "Deploying a pod networking solution.."
     #kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
