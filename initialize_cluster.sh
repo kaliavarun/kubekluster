@@ -11,7 +11,7 @@ if [[ $4 == "MASTER" ]]
 then
   if [[ $3 -eq 1 ]]
   then
-    CMD="kubeadm init --v=5 --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16"
+    CMD="kubeadm init --v=5 --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16 --cri-socket=/var/run/cri-dockerd.sock"
     echo $CMD
     eval $CMD
 
