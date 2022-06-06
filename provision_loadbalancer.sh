@@ -14,7 +14,7 @@ backend kubernetes-backend
     mode tcp
     option tcp-check
     balance roundrobin
-    server kmaster1 192.168.1.50:6443 check fall 3 rise 2
+    server kmaster1 192.168.1.62:6443 check fall 3 rise 2
     #server kmaster2 192.168.56.102:6443 check fall 3 rise 2
 frontend http_front
     bind *:80

@@ -11,7 +11,7 @@ if [[ $4 == "MASTER" ]]
 then
   if [[ $3 -eq 1 ]]
   then
-    CMD="kubeadm init --v=5 --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16 --cri-socket=/var/run/cri-dockerd.sock"
+    CMD="kubeadm init --v=5 --control-plane-endpoint="$1:6443" --upload-certs --apiserver-advertise-address=$2 --pod-network-cidr=192.168.0.0/16 --cri-socket=/run/cri-dockerd.sock"
     echo $CMD
     eval $CMD
 
@@ -45,7 +45,7 @@ fi
 if [[ $4 == "WORKER" ]]
 then
   echo "Joining worker node [$2] with control plane"
-  JOIN_WORKER="$(cat $CMD_JOIN_MASTER) --apiserver-advertise-address=$2 --v=5  "
+  JOIN_WORKER="$(cat $CMD_JOIN_MASTER) --apiserver-advertise-address=$2 --v=5  --cri-socket=/run/cri-dockerd.sock"
   echo $JOIN_WORKER
   eval $JOIN_WORKER
 fi
