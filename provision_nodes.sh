@@ -42,9 +42,9 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 }
 EOF
 
-systemctl enable docker
-systemctl daemon-reload
-systemctl restart docker
+sudo stemctl enable docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 # Install Mirantis cri-dockerd(third part docker shim) as Docker Engine shim for Kubernetes
 # Since dockershim has been removed from kubernetes since version 1.24
