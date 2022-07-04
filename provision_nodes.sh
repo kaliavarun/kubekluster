@@ -68,4 +68,26 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
 sudo apt update -y && sudo apt install -y kubeadm kubelet kubectl
 
+echo "************************************Install cri**************************************"\
+cd /tmp
+VER=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest|grep tag_name | cut -d '"' -f 4)
+echo $VER
 
+wget https://github.com/Mirantis/cri-dockerd/releases/download/${VER}/cri-dockerd-${VER:1}.arm64.tgz
+tar xvf cri-dockerd-${VER:1}.arm64.tgz
+
+sudo mv -f cri-dockerd /usr/local/bin/
+
+cri-dockerd --version
+
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket
+sudo mv -f cri-docker.socket cri-docker.service /etc/systemd/system/
+sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable cri-docker.service
+sudo systemctl enable --now cri-docker.socket
+
+echo "Installed."
