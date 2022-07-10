@@ -84,7 +84,8 @@ wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/sys
 wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket
 sudo mv -f cri-docker.socket cri-docker.service /etc/systemd/system/
 sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
-
+#Note make sure to update the cri-docker.service file with cni arguments.
+#ExecStart=/usr/local/bin/cri-dockerd --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-cache-dir=/var/lib/cni/cache --cni-conf-dir=/etc/cni/net.d --pod-infra-container-image=k8s.gcr.io/pause:3.7
 
 sudo systemctl daemon-reload
 sudo systemctl enable cri-docker.service
