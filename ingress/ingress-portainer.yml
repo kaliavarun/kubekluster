@@ -8,9 +8,10 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - http:
+  - host: "portainer.kubekluster.com"
+    http:
       paths:
-      - path: /portainer
+      - path: /
         pathType: Prefix
         backend:
           service:
