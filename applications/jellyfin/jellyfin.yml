@@ -158,5 +158,38 @@ spec:
         #   name: device-video12
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin-service
+  namespace: jellyfin
+spec:
+  ports:
+  - name: port-1
+    nodePort: 31074
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  - name: port-2
+    nodePort: 32440
+    port: 8920
+    protocol: TCP
+    targetPort: 8920
+  - name: port-3
+    nodePort: 31660
+    port: 1900
+    protocol: UDP
+    targetPort: 1900
+  - name: port-4
+    nodePort: 31378
+    port: 7359
+    protocol: UDP
+    targetPort: 7359
+  selector:
+    app: jellyfin
+  sessionAffinity: None
+  type: NodePort
     
