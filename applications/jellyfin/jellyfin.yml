@@ -19,7 +19,7 @@ spec:
     - ReadWriteMany                # < Multiple pods can write to storage 
   persistentVolumeReclaimPolicy: Retain # < The persistent volume can reclaimed 
   hostPath:
-    path: "/home/pi/applications/jellyfin/config"
+    path: "/home/kworker1/applications/jellyfin/config"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -34,7 +34,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: "/home/pi/media/movies"
+    path: "/home/kworker1/media/movies"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
