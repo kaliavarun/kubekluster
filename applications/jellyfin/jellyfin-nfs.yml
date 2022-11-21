@@ -33,8 +33,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: "/home/kworker1/media/movies"
+  nfs:
+    path: /home/pi/media    # < Name of your NFS share with subfolder
+    server: 192.168.1.100        # < IP number of your NFS server
+    readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
