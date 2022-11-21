@@ -18,8 +18,10 @@ spec:
   accessModes:
     - ReadWriteMany                # < Multiple pods can write to storage 
   persistentVolumeReclaimPolicy: Retain # < The persistent volume can reclaimed 
-  hostPath:
-    path: "/home/kworker1/applications/jellyfin/config"
+  nfs:
+    path: /home/pi/media/config    # < Name of your NFS share with subfolder
+    server: 192.168.1.100        # < IP number of your NFS server
+    readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolume
