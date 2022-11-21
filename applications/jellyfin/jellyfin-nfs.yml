@@ -1,0 +1,195 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: jellyfin
+spec: {}
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-pv-config   # < name of the persisant volume ("pv") in kubenetes
+  namespace: jellyfin            # < namespace where place the pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi                   # < max. size we reserve for the pv
+  accessModes:
+    - ReadWriteMany                # < Multiple pods can write to storage 
+  persistentVolumeReclaimPolicy: Retain # < The persistent volume can reclaimed 
+  hostPath:
+    path: "/home/kworker1/applications/jellyfin/config"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-pv-data
+  namespace: jellyfin
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 50Gi                   # < max. size we reserve for the pv. A bigger value than the configdata
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/home/kworker1/media/movies"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-pvc-config   # < name of the persistant volume claim ("pvc'")
+  namespace: jellyfin         # < namespace where place the pvc
+spec:
+  storageClassName: ""
+  volumeName: jellyfin-pv-config  # < the pv it will "claim" to storage. Created in the previous yaml.
+  accessModes:
+    - ReadWriteMany             # < Multiple pods can write to storage. Same value as pv
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi              # < How much data can the pvc claim from pv
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-pvc-data
+  namespace: jellyfin
+spec:
+  storageClassName: ""
+  volumeName: jellyfin-pv-data
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      volumes:
+      - name: host-jellyfin-config
+        persistentVolumeClaim:
+          claimName: jellyfin-pvc-config
+      - name: host-jellyfin-data
+        persistentVolumeClaim:
+          claimName: jellyfin-pvc-data
+      # The settings below have been marked out and can be used when removing the "#"
+      # - name: device-vcsm # Only needed if you want to use your Raspberry Pi MMAL video decoding (Enabled as OpenMax H264 decode in gui settings).
+      #   hostPath:
+      #     path: /dev/vcsm 
+      # - name: device-vchiq  #Only needed if you want to use your Raspberry Pi OpenMax video encoding.
+      #   hostPath:
+      #    path: /dev/vchiq
+      # - name: device-video10  #Only needed if you want to use your Raspberry Pi V4L2 video encoding.
+      #   hostPath:
+      #     path: /dev/video10 
+      # - name: device-video11  #Only needed if you want to use your Raspberry Pi V4L2 video encoding.
+      #   hostPath:
+      #     path: /dev/video11 
+      # - name: device-video12  #Only needed if you want to use your Raspberry Pi V4L2 video encoding.
+      #   hostPath:
+      #      path: /dev/video12 
+      containers:
+      - env:
+        - name: PGID
+          value: "\x36\x35\x35\x34\x31" # < ASCII code for '65541'
+        - name: PUID
+          value: "\x31\x30\x34\x34" #< ACII code for '1044'
+        - name: TZ
+          value: Europe/Amsterdam
+        image: jellyfin/jellyfin
+        imagePullPolicy: Always
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+          name: http-tcp
+          protocol: TCP
+        - containerPort: 8920
+          name: https-tcp
+          protocol: TCP
+        - containerPort: 1900
+          name: dlna-udp
+          protocol: UDP
+        - containerPort: 7359
+          name: discovery-udp
+          protocol: UDP      
+        resources: {}
+        stdin: true
+        tty: true
+        volumeMounts:
+        - mountPath: /config
+          name: host-jellyfin-config
+        - mountPath: /data
+          name: host-jellyfin-data
+        # Below are the path to mount devices for hardware acceleration
+        # The settings below have been marked out and can be used when removing the "#"
+        # - mountPath: /dev/vcsm
+        #   name: device-vcsm
+        # - mountPath: /dev/vchiq
+        #   name: device-vchiq
+        # - mountPath: /dev/video10
+        #   name: device-video10
+        # - mountPath: /dev/video11
+        #   name: device-video11
+        # - mountPath: /dev/video12
+        #   name: device-video12
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin-service
+  namespace: jellyfin
+spec:
+  ports:
+  - name: port-1
+    nodePort: 31074
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  - name: port-2
+    nodePort: 32440
+    port: 8920
+    protocol: TCP
+    targetPort: 8920
+  - name: port-3
+    nodePort: 31660
+    port: 1900
+    protocol: UDP
+    targetPort: 1900
+  - name: port-4
+    nodePort: 31378
+    port: 7359
+    protocol: UDP
+    targetPort: 7359
+  selector:
+    app: jellyfin
+  sessionAffinity: None
+  type: NodePort
+    
