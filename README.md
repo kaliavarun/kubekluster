@@ -16,6 +16,7 @@ and you are done!!
 > * Perform all the commands as root user unless otherwise specified
 
 ## Pre-requisites
+Install virtualization software using pimox and qemu
 If you want to try this in a virtualized environment on your workstation
 * Virtualbox installed
 * Vagrant installed
